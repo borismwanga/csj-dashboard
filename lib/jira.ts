@@ -40,7 +40,7 @@ async function post<T>(path: string, body: unknown): Promise<T> {
 }
 
 // Enhanced search (/search/jql), paged with nextPageToken.
-async function search(jql: string, fields: string[], cap = 2000): Promise<Issue[]> {
+async function search(jql: string, fields: string[], cap = 5000): Promise<Issue[]> {
   const out: Issue[] = [];
   let nextPageToken: string | undefined;
   do {
@@ -85,9 +85,9 @@ export async function loadJira(now = new Date()): Promise<JiraFeed> {
   const today = now.toLocaleDateString("sv-SE");
   counts["Resolved today"] = resolved.filter((i) => i.fields.resolutiondate && new Date(i.fields.resolutiondate).toLocaleDateString("sv-SE") === today).length;
 
-  // Highest priority first (Jira's default ids: 1 = Highest … 5 = Lowest), then oldest.
+  // Newest tickets first.
   const tickets = [...open]
-    .sort((a, b) => Number(a.fields.priority?.id ?? 99) - Number(b.fields.priority?.id ?? 99) || (a.fields.created ?? "").localeCompare(b.fields.created ?? ""))
+    .sort((a, b) => (b.fields.created ?? "").localeCompare(a.fields.created ?? ""))
     .slice(0, 10)
     .map((i) => ({
       key: i.key,

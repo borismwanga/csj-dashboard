@@ -16,10 +16,14 @@ const MOCK: JiraFeed = {
   resolved: { days: 30, perAgent: [{ name: "Agent B", count: 41 }, { name: "Agent A", count: 33 }, { name: "Agent C", count: 12 }] },
 };
 
+// ~1000 open tickets per load: share one result between screens for a minute.
+let cache: { at: number; data: JiraFeed } | null = null;
+
 export async function GET() {
   if (!jiraConfigured()) return Response.json(MOCK);
   try {
-    return Response.json(await loadJira());
+    if (!cache || Date.now() - cache.at > 60_000) cache = { at: Date.now(), data: await loadJira() };
+    return Response.json(cache.data);
   } catch (e) {
     return Response.json({ error: String(e) }, { status: 500 });
   }

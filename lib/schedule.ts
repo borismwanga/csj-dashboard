@@ -117,7 +117,7 @@ export const memberIds = (f: ShiftsFeed): Record<string, string> =>
 export function buildWeek(data: ByPerson, ids: Record<string, string> = {}, today = new Date()): WeekSchedule {
   const mon = new Date(today.getFullYear(), today.getMonth(), today.getDate());
   mon.setDate(mon.getDate() - ((mon.getDay() + 6) % 7));
-  const days = Array.from({ length: 7 }, (_, i) => {
+  const days = Array.from({ length: 5 }, (_, i) => { // Monday-Friday
     const x = new Date(mon); x.setDate(mon.getDate() + i);
     return iso(x.getFullYear(), x.getMonth(), x.getDate());
   });

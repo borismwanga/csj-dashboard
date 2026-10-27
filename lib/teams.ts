@@ -95,6 +95,7 @@ export function fromChannelFeed(f: ChannelFeed, now = new Date(), max = 8): Team
     .filter((m) => m.text || m.gif || m.image || m.files)
     .sort((a, b) => b.at.localeCompare(a.at))
     .slice(0, max)
+    .reverse() // chat order: oldest at the top, newest at the bottom
     .map(({ at, ...m }) => m);
   return { channel: f.channel ?? "Teams", messages };
 }

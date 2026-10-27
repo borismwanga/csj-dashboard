@@ -16,7 +16,7 @@ below are filled in, the two Jira slides show mock data with a "mock data" badge
 JIRA_BASE_URL=https://<your-site>.atlassian.net
 JIRA_EMAIL=<account e-mail>
 JIRA_API_TOKEN=<token>
-JIRA_JQL=project = ITCSJ
+JIRA_JQL=project = ITCSJ AND Team in aqlFunction("objectId = 4892") AND issuetype != "[System] Change"
 JIRA_RESOLVED_DAYS=30
 ```
 
@@ -35,6 +35,7 @@ It checks the login, lists projects (key + name) and team-like fields, and shows
 | Goal | JQL |
 |---|---|
 | One project | `project = ITCSJ` |
+| **Current:** Service Desk team, no Changes/CAB | `project = ITCSJ AND Team in aqlFunction("objectId = 4892") AND issuetype != "[System] Change"` |
 | Only the Service Desk team | `project = ITCSJ AND "Team[Team]" = "Service Desk"` (field name from the script output) |
 | Tickets assigned to an AD/Jira group | `project = ITCSJ AND assignee in membersOf("servicedesk")` |
 
@@ -45,7 +46,7 @@ Try a JQL in Jira's issue search first. Once it shows the right tickets there, c
 **Jira tickets**
 - Tiles: open tickets per status (To Do statuses first, then In Progress), **Unassigned** (orange when > 0)
   and **Resolved today**.
-- The 10 most urgent open tickets: highest priority first, then oldest. Unassigned is highlighted.
+- The 10 newest open tickets, newest first. Unassigned is highlighted.
 
 **Jira team**
 - Open tickets per agent.
@@ -53,3 +54,11 @@ Try a JQL in Jira's issue search first. Once it shows the right tickets there, c
 
 If Jira returns an error (bad token, bad JQL), the slide keeps the last good data and shows "⚠ data may be
 outdated". Open http://localhost:3000/api/jira to see the exact error.
+
+## Notes for ITCSJ
+
+- **Team** is an Assets field (`customfield_10158`). Object **4892** is the Service Desk team; its name
+  can't be read without Assets permission, hence `aqlFunction("objectId = 4892")`.
+- **CAB** only exists on `[System] Change` tickets (statuses *Collect CAB information*, *CAB Approval*,
+  *CAB Approved*), so excluding that issue type removes everything CAB-related.
+- Loading takes ~10 s (≈1000 open + ≈2000 resolved tickets); the API caches the result for 60 s.

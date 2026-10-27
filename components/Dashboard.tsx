@@ -7,7 +7,7 @@ import type { Count, JiraFeed } from "../lib/jira";
 // Edit durations here (seconds per slide).
 const SLIDES = [
   { id: "schedule", title: "Weekly schedule", seconds: 25 },
-  { id: "teams", title: "Teams", seconds: 20 },
+  { id: "teams", title: "Service Desk Internal Com", seconds: 20 },
   { id: "jira", title: "Jira tickets", seconds: 25 },
   { id: "jira-team", title: "Jira team", seconds: 20 },
 ] as const;

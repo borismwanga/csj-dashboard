@@ -19,8 +19,8 @@ th.name { text-align: left; }
 td small { display: block; color: var(--muted); font-size: .65rem; overflow: hidden; text-overflow: ellipsis; }
 .today { background: #1c2733; }
 td.shift { color: var(--text); } td.vacation { color: var(--warn); } td.off, td.none { color: var(--muted); } td.label { color: var(--accent); }
-.feed { list-style: none; display: grid; gap: 1rem; }
-.feed li { background: var(--panel); border: 1px solid var(--line); border-radius: .6rem; padding: 1rem 1.4rem; }
+.feed { list-style: none; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; gap: 1rem; overflow: hidden; } /* newest stays visible at the bottom */
+.feed li { flex: none; background: var(--panel); border: 1px solid var(--line); border-radius: .6rem; padding: 1rem 1.4rem; }
 .feed p { margin-top: .3rem; font-size: 1.2rem; }
 .tiles { display: flex; gap: 1rem; margin-bottom: 1.5rem; }
 .tile { flex: 1; background: var(--panel); border: 1px solid var(--line); border-radius: .6rem; padding: 1rem; text-align: center; }
