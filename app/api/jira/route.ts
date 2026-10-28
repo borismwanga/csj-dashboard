@@ -6,8 +6,9 @@ export const dynamic = "force-dynamic";
 const MOCK: JiraFeed = {
   mock: true,
   counts: { Open: 12, "In Progress": 7, Waiting: 4, Unassigned: 3, "Resolved today": 9 },
+  inProgress: ["In Progress", "Waiting"],
   tickets: [
-    { key: "SD-1042", summary: "Printer not reachable on ward 3", status: "In Progress", priority: "High", assignee: "Agent A", age: "2h" },
+    { key: "SD-1042", summary: "Printer not reachable on ward 3", status: "In Progress", priority: "High", assignee: "Agent A", age: "2h", inProgress: true },
     { key: "SD-1041", summary: "Account unlock request", status: "Open", priority: "Medium", assignee: "Unassigned", age: "5h", unassigned: true },
     { key: "SD-1039", summary: "VPN token not syncing", status: "Waiting", priority: "Low", assignee: "Agent B", age: "1d" },
     { key: "SD-1037", summary: "New starter: workstation setup", status: "In Progress", priority: "Medium", assignee: "Agent C", age: "2d" },

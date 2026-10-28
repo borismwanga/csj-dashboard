@@ -5,12 +5,13 @@ const JQL = process.env.JIRA_JQL ?? "project = ITCSJ"; // no ORDER BY: it gets c
 const DAYS = Number(process.env.JIRA_RESOLVED_DAYS ?? 30);
 export const jiraConfigured = () => !!(BASE && process.env.JIRA_EMAIL && process.env.JIRA_API_TOKEN);
 
-export interface Ticket { key: string; summary: string; status: string; priority: string; assignee: string; age: string; unassigned?: boolean }
+export interface Ticket { key: string; summary: string; status: string; priority: string; assignee: string; age: string; unassigned?: boolean; inProgress?: boolean }
 export interface Count { name: string; count: number }
 export interface JiraFeed {
   mock?: boolean;
   stale?: boolean;
   counts: Record<string, number>; // tiles, in display order
+  inProgress?: string[]; // status names in the In Progress category (the rest of the statuses are To Do)
   tickets: Ticket[];
   workload: Count[]; // open tickets per agent
   resolved: { days: number; perAgent: Count[] };
@@ -81,6 +82,7 @@ export async function loadJira(now = new Date()): Promise<JiraFeed> {
   }
   const counts: Record<string, number> = {};
   for (const [name, { n }] of [...byStatus].sort((a, b) => a[1].cat - b[1].cat || b[1].n - a[1].n)) counts[name] = n;
+  const inProgress = [...byStatus].filter(([, v]) => v.cat === 1).map(([name]) => name);
   counts["Unassigned"] = open.filter((i) => !i.fields.assignee).length;
   const today = now.toLocaleDateString("sv-SE");
   counts["Resolved today"] = resolved.filter((i) => i.fields.resolutiondate && new Date(i.fields.resolutiondate).toLocaleDateString("sv-SE") === today).length;
@@ -97,7 +99,8 @@ export async function loadJira(now = new Date()): Promise<JiraFeed> {
       assignee: who(i) ?? "Unassigned",
       age: i.fields.created ? age(i.fields.created, now) : "",
       ...(i.fields.assignee ? {} : { unassigned: true }),
+      ...(i.fields.status?.statusCategory?.key === "indeterminate" ? { inProgress: true } : {}),
     }));
 
-  return { counts, tickets, workload: tally(open.map(who)), resolved: { days: DAYS, perAgent: tally(resolved.map(who)) } };
+  return { counts, inProgress, tickets, workload: tally(open.map(who)), resolved: { days: DAYS, perAgent: tally(resolved.map(who)) } };
 }

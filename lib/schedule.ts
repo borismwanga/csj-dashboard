@@ -1,11 +1,12 @@
 import ExcelJS from "exceljs";
 import { promises as fs } from "fs";
 import path from "path";
+import type { Appointments } from "./onboarding";
 
 export type Kind = "shift" | "vacation" | "off" | "label";
 export interface Entry { kind: Kind; text: string; start?: string; end?: string; note?: string }
 export interface Row { name: string; id?: string; cells: (Entry | null)[] }
-export interface WeekSchedule { weekStart: string; days: string[]; rows: Row[]; hasData: boolean; stale?: boolean }
+export interface WeekSchedule { weekStart: string; days: string[]; rows: Row[]; hasData: boolean; stale?: boolean; onboarding?: Appointments }
 export type ByPerson = Record<string, Record<string, Entry>>; // name -> ISO date -> entry
 
 // Swap this for a ShiftsProvider (Graph / Power Automate output) later; the UI doesn't change.

@@ -93,6 +93,17 @@ Create a placeholder `photos.json` containing `[]` in the `CSJ Dashboard` folder
 Check: `photos.json` starts with `[{"id":"…","photo":{"$content-type":"image/jpeg","$content":"/9j/…` (or `"photo":"/9j/…"`; the
 app accepts both).
 
+## 3b. Flow "Dashboard – Onboarding" (shared calendar)
+
+Writes today's events of the shared **Onboarding appointments** calendar to `onboarding.json`:
+`{"generatedAt": …, "calendar": "Onboarding appointments", "events": [ …raw Outlook events… ]}`
+(e.g. **Office 365 Outlook → Get calendar view of events (V3)** for today, then Compose + Update file as above).
+
+The schedule slide shows today's events in a strip under the grid: time, person and title (+ ticket key).
+Only `subject`, `start`/`end` (`startWithTimeZone`) and `isAllDay` are used. Subjects are read as
+`Type | Last, First | ITCSJ-12345` or `Onboarding appointment - Name`. The event **body is never shown**
+(Bookings puts e-mail addresses in it). Missing or broken file: the strip is simply not shown.
+
 ## 4. Dashboard PC
 
 1. Sign in to OneDrive with the flow account (or sync/shortcut the shared folder), and set
@@ -112,6 +123,7 @@ app accepts both).
 ## Behaviour
 
 - `shifts.json` missing → the schedule falls back to the newest Excel export in `./data`.
+- `onboarding.json` missing → no appointments strip.
 - `photos.json` missing, or no photo for someone → initials are shown.
 - `teams.json` missing → the Teams slide shows mock data with a "mock data" badge.
 - File half-synced / invalid JSON → the API returns 500 and the screen keeps the last good data, flagged as outdated.
